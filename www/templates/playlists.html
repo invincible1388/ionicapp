@@ -1,0 +1,29 @@
+<ion-view view-title="Playlists">
+  <ion-content>
+    <ion-list >
+	  <ion-item ng-repeat="playlist in playlists"
+            class="item-thumbnail-left" href="#/app/playlists/{{playlist.id}}">
+
+		<img ng-src="{{playlist.url}}">
+		<h2>{{playlist.title}}</h2>
+		<p>{{playlist.author}}</p>
+		<p>{{playlist.price}}</p>
+		<ion-option-button class="button-positive"
+						   ng-click="share(playlist)">
+		  Share
+		</ion-option-button>
+		<ion-option-button class="button-assertive"
+						   ng-click="edit(playlist)">
+		  Edit
+		</ion-option-button>
+		<ion-delete-button class="ion-minus-circled"
+						   ng-click="playlist.splice($index, 1)">
+		</ion-delete-button>
+		<ion-reorder-button class="ion-navicon"
+							on-reorder="reorderItem(item, $fromIndex, $toIndex)">
+		</ion-reorder-button>
+
+	  </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>
