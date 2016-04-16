@@ -1,0 +1,44 @@
+<ion-view view-title="Settings">
+  <ion-content>
+  <form ng-submit="saveSettings()">
+		<div class="list">
+		  <label class="item item-input">
+			<div class="input-label"><i class="ion-ios-search"></i>Default search keyword:</div>
+			<input type="text" ng-model="settings.defaultSearchText">
+		  </label>
+		  <label class="item item-input item-select">
+			<div class="input-label">
+			  <i class="ion-ios-paper"></i>
+			  News item in each page:
+			</div>
+			<select ng-model="settings.defaultNewsItemCount">
+			  <option>5</option>
+			  <option selected>10</option>
+			  <option>15</option>
+			  <option>20</option>
+			  <option>25</option>
+			</select>
+		  </label>
+		  <label class="item item-input item-select">
+			<div class="input-label">
+			 <i class="ion-ios-eye-outline"></i> Default theme:
+			</div>
+			<select ng-model="settings.defaultTheme">
+			  <option>light</option>
+			  <option>stable</option>
+			  <option>positive</option>
+			  <option>calm</option>
+			  <option>balanced</option>
+			  <option>energized</option>
+			  <option selected>assertive</option>
+			  <option>royal</option>
+			  <option>dark</option>
+			</select>
+		  </label>
+		</div>
+		<div class="padding">
+			<button class="button button-block button-{{settings.defaultTheme}}">Save</button>
+      </div>
+	</form>
+  </ion-content>
+</ion-view>

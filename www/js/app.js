@@ -1,11 +1,14 @@
+var APP_KEY = "8445b85126f7794b9d532fb8d317138bf4866ebf";
+
 // Ionic Starter App
 
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers'])
-
+angular.module('starter', ['ionic', 'starter.controllers','ngStorage'])
+.constant('appName', 'News Reader App')
+.constant('APP_KEY', '8445b85126f7794b9d532fb8d317138bf4866ebf')
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -32,11 +35,12 @@ angular.module('starter', ['ionic', 'starter.controllers'])
     controller: 'AppCtrl'
   })
 
-  .state('app.search', {
-    url: '/search',
+  .state('app.settings', {
+    url: '/settings',
     views: {
       'menuContent': {
-        templateUrl: 'templates/search.html'
+        templateUrl: 'templates/settings.html',
+		controller: 'SettingsCtrl'
       }
     }
   })
@@ -70,4 +74,24 @@ angular.module('starter', ['ionic', 'starter.controllers'])
   });
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app/playlists');
+})
+// create a new factory
+.factory ('StorageService', function ($localStorage) {
+	$localStorage = $localStorage.$default({
+					  settings: []
+					});
+	var _getAll = function () {
+	  return $localStorage.settings;
+	};
+	var _add = function (thing) {
+	  $localStorage.settings= thing;
+	}
+	var _remove = function (thing) {
+	  $localStorage.settings.splice($localStorage.settings.indexOf(thing), 1);
+	}
+	return {
+		getAll: _getAll,
+		add: _add,
+		remove: _remove
+	  };
 });
