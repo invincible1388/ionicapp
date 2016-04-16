@@ -1,4 +1,5 @@
-var APP_KEY = "8445b85126f7794b9d532fb8d317138bf4866ebf";
+// var APP_KEY = "8445b85126f7794b9d532fb8d317138bf4866ebf";
+var APP_KEY = "09a764c6158bb633c508748e5ae636a45bc04b0d";
 
 // Ionic Starter App
 
@@ -71,6 +72,15 @@ angular.module('starter', ['ionic', 'starter.controllers','ngStorage'])
         controller: 'PlaylistCtrl'
       }
     }
+  })
+  
+  .state('app.page404', {
+    url: '/page404',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/page404.html',
+      }
+    }
   });
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app/playlists');
@@ -94,4 +104,16 @@ angular.module('starter', ['ionic', 'starter.controllers','ngStorage'])
 		add: _add,
 		remove: _remove
 	  };
+})
+
+.filter('getById', function() {
+  return function(input, id) {
+    var i=0, len=input.length;
+    for (; i<len; i++) {
+      if (input[i].id == id) {
+        return input[i];
+      }
+    }
+    return null;
+  }
 });

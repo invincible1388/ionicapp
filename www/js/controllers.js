@@ -63,7 +63,7 @@ angular.module('starter.controllers', [])
   };
 })
 
-.controller('PlaylistsCtrl', function($scope, $http, $ionicLoading,$ionicPopup, StorageService) {
+.controller('PlaylistsCtrl', function($scope, $http, $ionicLoading,$ionicPopup, StorageService, $rootScope) {
 	$scope.settings = StorageService.getAll();
 	console.log(APP_KEY);
 	$scope.search = {text: $scope.settings.defaultSearchText};
@@ -111,7 +111,8 @@ angular.module('starter.controllers', [])
 												imgURL: response.data.result.docs[i].source.enriched.url.image,
 												description: response.data.result.docs[i].source.enriched.url.text,
 												author: response.data.result.docs[i].source.enriched.url.author,
-												keywords: response.data.result.docs[i].source.enriched.url.keywords});
+												keywords: response.data.result.docs[i].source.enriched.url.keywords,
+												timestamp: response.data.result.docs[i].timestamp});
 						
 					}				
 				}
@@ -123,11 +124,26 @@ angular.module('starter.controllers', [])
 		}
 		
 		$scope.doSearch();
-
+		$rootScope.playlists = $scope.playlists;
 })
 
-.controller('PlaylistCtrl', function($scope, $stateParams) {
+.controller('PlaylistCtrl', function($scope, $stateParams, $rootScope, $filter, $state) {
+
 	//this 
+	console.log($stateParams);
+	console.log($rootScope.playlists);
+	$scope.newsItem = {};
+	
+	var id = $stateParams.playlistId;
+	 $scope.showdetails = function($id){
+		 var item = $filter('getById')($rootScope.playlists, $id);
+		 if(typeof  item !== "undefined" && item != null){
+			$scope.newsItem = item;
+		 } else {
+			$state.go('app.home');
+		 }
+		}
+	$scope.showdetails(id);
 })
 .controller('SettingsCtrl', function($scope, $stateParams, StorageService, $ionicPopup) {
 	//this 
