@@ -1,6 +1,6 @@
 angular.module('starter.controllers', [])
 
-.controller('AppCtrl', function($scope, $ionicModal, $ionicPopup, $ionicLoading, $timeout) {
+.controller('AppCtrl', function($scope, $ionicModal, $ionicPopup, $ionicLoading, $timeout, StorageService) {
 
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
@@ -8,7 +8,8 @@ angular.module('starter.controllers', [])
   // listen for the $ionicView.enter event:
   //$scope.$on('$ionicView.enter', function(e) {
   //});
-
+  $scope.settings = StorageService.getAll();
+	
   // Form data for the login modal
   $scope.loginData = {};
 
@@ -63,19 +64,13 @@ angular.module('starter.controllers', [])
   };
 })
 
-.controller('PlaylistsCtrl', function($scope, $http, $ionicLoading,$ionicPopup, StorageService, $rootScope) {
+.controller('PlaylistsCtrl', function($scope, $http, $ionicModal, $ionicPopup, StorageService, $rootScope, $timeout) {
 	$scope.settings = StorageService.getAll();
 	console.log(APP_KEY);
+	$scope.nextSearckKey = null;
 	$scope.search = {text: $scope.settings.defaultSearchText};
 	
-	 $scope.showLoading = function() {
-		$ionicLoading.show({
-		  template: 'Loading...'
-		});
-	  };
-	  $scope.hideLoading = function(){
-		$ionicLoading.hide();
-	  };
+	
 		$scope.showPopup = function(msg){
 			var alertPopup = $ionicPopup.alert({
 			  title: 'Error!',
@@ -93,18 +88,29 @@ angular.module('starter.controllers', [])
 	  }
 	  
 	  
-	  $scope.doSearch = function(){
-		  $scope.showLoading();
+	  $scope.doSearch = function($clearFlag = false){
+		 // $scope.showLoading();
 		  
 		  console.log("search keyword: "+$scope.search.text);
-		  $http.get("https://gateway-a.watsonplatform.net/calls/data/GetNews?apikey="+APP_KEY+"&start=now-7d&end=now&return=enriched.url.url,enriched.url.title,enriched.url.image,enriched.url.text,enriched.url.author&q.enriched.url.title="+$scope.search.text+"&outputMode=json&count="+$scope.settings.defaultNewsItemCount)
+		  var url = "https://gateway-a.watsonplatform.net/calls/data/GetNews?apikey="+APP_KEY
+						+"&start=now-7d&end=now&return=enriched.url.url,enriched.url.title,enriched.url.image,enriched.url.text,"
+						+"enriched.url.author&q.enriched.url.title="+$scope.search.text+"&outputMode=json&count="+
+						$scope.settings.defaultNewsItemCount;
+		
+		  if($scope.nextSearckKey != null){
+			url += "next="+$scope.nextSearckKey;
+		  }
+		  if($clearFlag){
+			$scope.playlists.splice(0, $scope.playlists.length);
+		  }
+		  $http.get(url)
 			.then(function(response) {
 		
 				  console.log(response);
 				 if(response.data.status == "OK"){
 					
 					for(var i = 0; i< response.data.result.docs.length; i++){
-						
+						try{
 						$scope.playlists.push({title: response.data.result.docs[i].source.enriched.url.title, 
 												id: response.data.result.docs[i].id,
 												url: response.data.result.docs[i].source.enriched.url.url,
@@ -113,18 +119,60 @@ angular.module('starter.controllers', [])
 												author: response.data.result.docs[i].source.enriched.url.author,
 												keywords: response.data.result.docs[i].source.enriched.url.keywords,
 												timestamp: response.data.result.docs[i].timestamp});
+						} catch(e){
+							console.log(e);
+						}
 						
-					}				
+					}	
+					$scope.nextSearckKey = response.data.result.next;
 				}
 				else if(response.data.status == "ERROR"){
 					$scope.showPopup("Server returned no results");
 				}
-			  $scope.hideLoading();
+			 // $scope.hideLoading();
 			});
 		}
-		
+		$scope.doSearchNewsItems = function(){
+			$scope.doSearch(true);
+		};
+		$scope.doRefresh = function() {
+    
+			console.log('Refreshing!');
+			$timeout( function() {
+			  //simulate async response
+			  $scope.doSearch(true);
+
+			  //Stop the ion-refresher from spinning
+			  $scope.$broadcast('scroll.refreshComplete');
+			
+			}, 1000);
+		};
+		$scope.loadMoreNewsItems = function(){
+			$scope.doSearch();
+		};
+		 $scope.$on('$stateChangeSuccess', function() {
+			$scope.loadMoreNewsItems();
+		  });
+		  
 		$scope.doSearch();
 		$rootScope.playlists = $scope.playlists;
+		
+		
+		// Create the login modal that we will use later
+		  $ionicModal.fromTemplateUrl('templates/login.html', {
+			scope: $scope
+		  }).then(function(modal) {
+			$scope.filterModal = modal;
+		  });
+		$scope.showNewsFetchOptions = function(){
+			$scope.filterModal.show();
+			
+		};
+		$scope.hideNewsFetchOptions = function(){
+			
+			$scope.filterModal.hide();
+			
+		};
 })
 
 .controller('PlaylistCtrl', function($scope, $stateParams, $rootScope, $filter, $state) {
@@ -136,13 +184,19 @@ angular.module('starter.controllers', [])
 	
 	var id = $stateParams.playlistId;
 	 $scope.showdetails = function($id){
-		 var item = $filter('getById')($rootScope.playlists, $id);
-		 if(typeof  item !== "undefined" && item != null){
-			$scope.newsItem = item;
+		
+		if(typeof $rootScope.playlists !== "undefined" && $rootScope.playlists!= null){
+			 var item = $filter('getById')($rootScope.playlists, $id);
+			 if(typeof  item !== "undefined" && item != null){
+				$scope.newsItem = item;
+			 } else {
+				$state.go('app.page404');
+			 }
 		 } else {
-			$state.go('app.home');
+			$state.go('app.page404');
 		 }
 		}
+	
 	$scope.showdetails(id);
 })
 .controller('SettingsCtrl', function($scope, $stateParams, StorageService, $ionicPopup) {

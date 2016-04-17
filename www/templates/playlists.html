@@ -1,18 +1,30 @@
-
-<ion-view view-title="NewsApp">
-
-  <ion-content>
-  <form ng-submit="doSearch()">
-	  <div class="bar bar-header item-input-inset">
+<ion-header-bar class="bar bar-subheader bar-{{settings.defaultTheme}} item-input-inset"> 
+     <form ng-submit="doSearchNewsItems()">
+	  <div class="bar bar-header bar-{{settings.defaultTheme}}">
 		  <label class="item-input-wrapper">
 			<i class="icon ion-ios-search placeholder-icon"></i>
 			<input type="search" placeholder="Search keywords, text..." ng-model="search.text" >
 		  </label>
-		  <span class="button button-small button-outline button-{{settings.defaultTheme}}" ng-click="clearSearchText()">
+		  <span class="button button-small button-outline button-light" ng-click="clearSearchText()">
 			Cancel
 		  </span>
 		</div>
 	</form>
+ </ion-header-bar>
+<ion-view view-title="NewsApp">
+  <ion-nav-bar class="bar-{{settings.defaultTheme}}">
+    <ion-nav-buttons side="left">
+		  <button class="button button-icon button-clear ion-navicon" menu-toggle="left"></button>
+	</ion-nav-buttons>
+	<ion-nav-buttons side="right">
+		  <button class="button button-icon ion-ios-gear-outline" ng-click="setNewsFetchOptions()"></button>
+	</ion-nav-buttons>
+  </ion-nav-bar>
+  <ion-content>
+
+	<ion-refresher on-refresh="doRefresh()">
+                     
+    </ion-refresher>
     <ion-list >
 	  <ion-item ng-repeat="playlist in playlists"
             class="item-thumbnail-left" href="#/app/playlists/{{playlist.id}}">
@@ -24,11 +36,11 @@
 		<p> </p>
 		<ion-option-button class="button-positive"
 						   ng-click="share(playlist)">
-		  Share
+		  <i class="ion-android-share-alt"></i> Share
 		</ion-option-button>
 		<ion-option-button class="button-assertive"
 						   ng-click="edit(playlist)">
-		  Edit
+		  <i class="ion-android-mail"></i> Read later
 		</ion-option-button>
 		<ion-delete-button class="ion-minus-circled"
 						   ng-click="playlist.splice($index, 1)">
@@ -39,5 +51,9 @@
 
 	  </ion-item>
     </ion-list>
+	<ion-infinite-scroll
+		on-infinite="loadMoreNewsItems()"
+		distance="1%">
+	  </ion-infinite-scroll>
   </ion-content>
 </ion-view>

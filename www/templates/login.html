@@ -1,5 +1,5 @@
 <ion-modal-view>
-  <ion-header-bar>
+  <ion-header-bar class="bar bar-{{settings.defaultTheme}}">
     <h1 class="title">Login Window</h1>
     <div class="buttons">
       <button class="button button-clear" ng-click="closeLogin()">Close</button>
@@ -17,7 +17,7 @@
           <input type="password" ng-model="loginData.password">
         </label>
         <label class="item">
-          <button class="button button-block button-positive" type="submit">Log in</button>
+          <button class="button button-block button-{{settings.defaultTheme}}" type="submit">Log in</button>
         </label>
       </div>
     </form>
