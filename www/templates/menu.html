@@ -9,6 +9,19 @@
         </button>
       </ion-nav-buttons>
     </ion-nav-bar>
+	<ion-header-bar class="bar bar-subheader bar-{{settings.defaultTheme}} item-input-inset"> 
+     <form ng-submit="doSearch()">
+	  <div class="bar bar-header bar-{{settings.defaultTheme}}">
+		  <label class="item-input-wrapper">
+			<i class="icon ion-ios-search placeholder-icon"></i>
+			<input type="search" placeholder="Search keywords, text..." ng-model="search.text" >
+		  </label>
+		  <span class="button button-small button-outline button-light" ng-click="clearSearchText()">
+			Cancel
+		  </span>
+		</div>
+	</form>
+ </ion-header-bar>
     <ion-nav-view name="menuContent"></ion-nav-view>
   </ion-side-menu-content>
 
@@ -18,18 +31,60 @@
     </ion-header-bar>
     <ion-content class="{{settings.defaultTheme}}-bg scroll-content ionic-scroll  has-header">
       <ion-list>
-	  
-   	    <ion-item menu-close href="#/app/playlists">
+		<div class="item item-divider">
+			Categories
+		</div>
+   	    <ion-item menu-close href="#/app/playlists/home">
           <i class="ion-ios-home-outline"></i>&nbsp;Home
         </ion-item>
+		
+		<ion-item menu-close href="#/app/playlists/world">
+          <i class="ion-ios-world-outline"></i>&nbsp;World
+        </ion-item>
+		<ion-item menu-close href="#/app/playlists/politics">
+          <i class="ion-ios-paper-outline"></i>&nbsp;Politics
+        </ion-item>
+		<ion-item menu-close href="#/app/playlists/business">
+          <i class="ion-ios-pulse-strong"></i>&nbsp;Business
+        </ion-item>
+		<ion-item menu-close href="#/app/playlists/technology">
+          <i class="ion-ios-color-wand"></i>&nbsp;Technology
+        </ion-item>
+		<ion-item menu-close href="#/app/playlists/science">
+          <i class="ion-ios-flask-outline"></i>&nbsp;Science
+        </ion-item>
+		<ion-item menu-close href="#/app/playlists/health">
+          <i class="ion-ios-heart-outline"></i>&nbsp;Health
+        </ion-item>
+		<ion-item menu-close href="#/app/playlists/sports">
+          <i class="ion-ios-basketball-outline"></i>&nbsp;Sports
+        </ion-item>
+		<ion-item menu-close href="#/app/playlists/arts">
+          <i class="ion-ios-musical-notes"></i>&nbsp;Arts
+        </ion-item>
+		<ion-item menu-close href="#/app/playlists/fashion">
+          <i class="ion-ios-home-outline"></i>&nbsp;Fashion
+        </ion-item>
+		<ion-item menu-close href="#/app/playlists/travel">
+          <i class="ion-ios-navigate"></i>&nbsp;Travel
+        </ion-item>
+		<ion-item menu-close href="#/app/playlists/magazine">
+          <i class="ion-ios-book-outline"></i>&nbsp;Magazine
+        </ion-item>
+		
+		<div class="item item-divider">
+			Other
+		</div>
         <ion-item menu-close ng-click="login()">
           <i class="ion-ios-person-outline"></i>&nbsp;Login
         </ion-item>
+		
+		
+		
         <ion-item menu-close href="#/app/settings">
          <i class="ion-ios-settings"></i>&nbsp;Settings
         </ion-item>
-        
-       
+           
 		<ion-item menu-close href="#/app/browse">
           <i class="ion-ios-information-outline"></i>&nbsp;About Us
         </ion-item>

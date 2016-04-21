@@ -6,15 +6,15 @@
 	<div class="list card">
 
 	  <div class="item">
-		<h2>{{newsItem.title}}</h2>
-		<h2>{{newsItem.byline}}</h2>
+		<h2>{{newsItem.headline.main + " " +newsItem.headline.name}}</h2>
+		<h2>{{newsItem.byline.original}}</h2>
 		<p ng-show="newsItem.geo_facet[0]">{{ newsItem.geo_facet[0] }}  </p>
-		<p>{{ newsItem.published_date |  date:'yyyy-MM-dd' }}  </p>
+		<p>{{ newsItem.pub_date |  date:'yyyy-MM-dd' }}  </p>
 	  </div>
 
 	  <div class="item item-body">
-		<img ng-show="newsItem.multimedia[4].url" class="full-image" ng-src="{{newsItem.multimedia[4].url}}">
-		<p> {{newsItem.abstract}}</p>
+		<img ng-show="newsItem.xlargeimage" class="full-image" ng-src="{{newsItem.xlargeimage}}">
+		<p> {{newsItem.lead_paragraph}}</p>
 		<p>
 		  <a href="#" class="subdued">1 Like</a>
 		  <a href="#" class="subdued">5 Comments</a>

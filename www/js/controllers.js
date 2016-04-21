@@ -1,6 +1,6 @@
 angular.module('starter.controllers', [])
 
-.controller('AppCtrl', function($scope, $ionicModal, $ionicPopup, $ionicLoading, $timeout, StorageService) {
+.controller('AppCtrl', function($scope, $ionicModal, $ionicPopup, $ionicLoading, $timeout, StorageService, $state) {
 
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
@@ -9,7 +9,7 @@ angular.module('starter.controllers', [])
   //$scope.$on('$ionicView.enter', function(e) {
   //});
   $scope.settings = StorageService.getAll();
-	
+  $scope.search = {text: $scope.settings.defaultSearchText};
   // Form data for the login modal
   $scope.loginData = {};
 
@@ -62,13 +62,31 @@ angular.module('starter.controllers', [])
 	}
 	$scope.hideLoading();
   };
+  
+  $scope.searchlist = new Array();
+  $scope.doSearch = function(){
+	
+	$state.go('app.searchlist', {searchKeyword: $scope.search.text});
+  };
+  
+   $scope.clearSearchText = function(){
+			$scope.search.text = '';
+	  };
 })
 
-.controller('PlaylistsCtrl', function($scope, $http, $ionicModal, $ionicPopup, StorageService, $rootScope, $timeout) {
+
+.controller('PlaylistsCtrl', function($scope, $http, $ionicModal, $ionicPopup, StorageService, LoadNewsService, BasicOperationService, $rootScope, $timeout, $stateParams) {
+	
+	$scope.playlists = $rootScope.playlists;
+	$scope.category = $stateParams.category;
+	
+	if(!$scope.category){
+		$scope.category = "home";
+	}
+	$scope.screenTitle = BasicOperationService.ucfirst($scope.category);
 	$scope.settings = StorageService.getAll();
-	console.log(APP_KEY);
 	$scope.nextSearckKey = null;
-	$scope.search = {text: $scope.settings.defaultSearchText};
+	
 	
 	
 		$scope.showPopup = function(msg){
@@ -87,60 +105,37 @@ angular.module('starter.controllers', [])
 			$scope.search.text = '';
 	  }
 	  
+	  $scope.fetchTopStories = function(){
+		 var data = LoadNewsService.getTopNews($scope.category, function(data){
+			
+			 if(data.status == "OK" && data.num_results > 0){
+				for(var i = 0; i< data.results.length; i++){
+							try{
+								if(typeof  $scope.playlists[$scope.category] === "undefined" ){
+									$scope.playlists[$scope.category] = new Array();
+								 } 
+								data.results[i].id = BasicOperationService.generateUuid();
+								$scope.playlists[$scope.category].push(data.results[i]);
+							} catch(e){
+								console.log(e);
+							}
+							
+						}	
+			 } else {
+				$scope.showPopup("Server returned no results");
+			 }
+		 
+		 });
+	  };
 	  
-	  $scope.doSearch = function($clearFlag = false){
-		 // $scope.showLoading();
-		  
-		  console.log("search keyword: "+$scope.search.text);
-		  var url = "https://gateway-a.watsonplatform.net/calls/data/GetNews?apikey="+APP_KEY
-						+"&start=now-7d&end=now&return=enriched.url.url,enriched.url.title,enriched.url.image,enriched.url.text,"
-						+"enriched.url.author&q.enriched.url.title="+$scope.search.text+"&outputMode=json&count="+
-						$scope.settings.defaultNewsItemCount;
+	
 		
-		  if($scope.nextSearckKey != null){
-			url += "next="+$scope.nextSearckKey;
-		  }
-		  if($clearFlag){
-			$scope.playlists.splice(0, $scope.playlists.length);
-		  }
-		  $http.get(url)
-			.then(function(response) {
-		
-				  console.log(response);
-				 if(response.data.status == "OK"){
-					
-					for(var i = 0; i< response.data.result.docs.length; i++){
-						try{
-						$scope.playlists.push({title: response.data.result.docs[i].source.enriched.url.title, 
-												id: response.data.result.docs[i].id,
-												url: response.data.result.docs[i].source.enriched.url.url,
-												imgURL: response.data.result.docs[i].source.enriched.url.image,
-												description: response.data.result.docs[i].source.enriched.url.text,
-												author: response.data.result.docs[i].source.enriched.url.author,
-												keywords: response.data.result.docs[i].source.enriched.url.keywords,
-												timestamp: response.data.result.docs[i].timestamp});
-						} catch(e){
-							console.log(e);
-						}
-						
-					}	
-					$scope.nextSearckKey = response.data.result.next;
-				}
-				else if(response.data.status == "ERROR"){
-					$scope.showPopup("Server returned no results");
-				}
-			 // $scope.hideLoading();
-			});
-		}
-		$scope.doSearchNewsItems = function(){
-			$scope.doSearch(true);
-		};
 		$scope.doRefresh = function() {
     
 			console.log('Refreshing!');
 			$timeout( function() {
 			  //simulate async response
-			  $scope.doSearch(true);
+			  $scope.fetchTopStories();
 
 			  //Stop the ion-refresher from spinning
 			  $scope.$broadcast('scroll.refreshComplete');
@@ -148,13 +143,13 @@ angular.module('starter.controllers', [])
 			}, 1000);
 		};
 		$scope.loadMoreNewsItems = function(){
-			$scope.doSearch();
+			//$scope.doSearch();
 		};
 		 $scope.$on('$stateChangeSuccess', function() {
-			$scope.loadMoreNewsItems();
+			//$scope.loadMoreNewsItems();
 		  });
 		  
-		$scope.doSearch();
+		$scope.fetchTopStories();
 		$rootScope.playlists = $scope.playlists;
 		
 		
@@ -183,10 +178,12 @@ angular.module('starter.controllers', [])
 	$scope.newsItem = {};
 	
 	var id = $stateParams.playlistId;
+	$scope.category = $stateParams.category;
+	
 	 $scope.showdetails = function($id){
 		
-		if(typeof $rootScope.playlists !== "undefined" && $rootScope.playlists!= null){
-			 var item = $filter('getById')($rootScope.playlists, $id);
+		if(typeof $rootScope.playlists[$scope.category] !== "undefined" && $rootScope.playlists[$scope.category]!= null){
+			 var item = $filter('getById')($rootScope.playlists[$scope.category], $id);
 			 if(typeof  item !== "undefined" && item != null){
 				$scope.newsItem = item;
 			 } else {
@@ -223,4 +220,114 @@ angular.module('starter.controllers', [])
 			});
 
 	}
+})
+
+.controller('SearchListCtrl', function($scope, $ionicPopup, StorageService, LoadNewsService, BasicOperationService, $rootScope, $timeout, $stateParams) {
+	
+	$scope.searchlists = new Array();
+	$scope.page = 0;
+	$scope.settings = StorageService.getAll();
+	$scope.nextSearckKey = null;
+	
+	
+	
+	$scope.showPopup = function(msg){
+		var alertPopup = $ionicPopup.alert({
+		  title: 'Error!',
+		  template: msg
+		});
+		alertPopup.then(function(res) {
+		  console.log('popup closed.');
+		});
+	  };
+	  
+	  $scope.playlists = new Array();
+	 
+	  
+	  $scope.doSearchNews = function(index){
+	  
+		var data = LoadNewsService.searchNews($scope.search.text, index, function(data){
+	
+				
+				
+				 if(data.status == "OK" && data.response.docs.length > 0){
+					data = data.response;
+					for(var i = 0; i< data.docs.length; i++){
+								try{
+									data.docs[i].id = data.docs[i]._id;
+									data.docs[i].baseUrl = BasicOperationService.getBaseUrl(data.docs[i].web_url);
+									for(var j=0; j< data.docs[i].multimedia.length; j++){
+										data.docs[i].multimedia[j].url = data.docs[i].baseUrl+"/"+data.docs[i].multimedia[j].url;
+										if(data.docs[i].multimedia[j].subtype=="xlarge"){
+											data.docs[i].xlargeimage = data.docs[i].multimedia[j].url;
+										} else if(data.docs[i].multimedia[j].subtype=="thumbnail"){
+											data.docs[i].thumbimage = data.docs[i].multimedia[j].url;
+										}
+									}
+									$scope.searchlists.push(data.docs[i]);
+								} catch(e){
+									console.log(e);
+								}
+								
+							}	
+				 } else {
+					$scope.showPopup("Server returned no results");
+				 }
+			 
+			 });
+	  };
+	  
+	
+		$scope.doRefresh = function() {
+    
+			console.log('Refreshing!');
+			$timeout( function() {
+			  //simulate async response
+			  $scope.doSearch(true);
+
+			  //Stop the ion-refresher from spinning
+			  $scope.$broadcast('scroll.refreshComplete');
+			
+			}, 1000);
+		};
+		 $scope.$on('$stateChangeSuccess', function() {
+			$scope.loadMoreNewsItems();
+		  });
+		$scope.loadMoreNewsItems = function(){
+			
+			$scope.doSearchNews($scope.page++);
+		}		
+		
+		$scope.doSearchNews($scope.page);
+		$rootScope.searchlists = $scope.searchlists;
+		
+		
+	
+})
+.controller('SearchItemCtrl', function($scope, $stateParams, $rootScope, $filter, $state) {
+
+	//this 
+	console.log($stateParams);
+	console.log($rootScope.searchlists);
+	$scope.newsItem = {};
+	
+	var id = $stateParams.searchlistId;
+	$scope.category = $stateParams.category;
+	
+	 $scope.showdetails = function($id){
+		
+		if(typeof $rootScope.searchlists !== "undefined" && $rootScope.searchlists != null){
+			 var item = $filter('getById')($rootScope.searchlists, $id);
+			 if(typeof  item !== "undefined" && item != null){
+				$scope.newsItem = item;
+			 } else {
+				$state.go('app.page404');
+			 }
+		 } else {
+			$state.go('app.page404');
+		 }
+		}
+	
+	$scope.showdetails(id);
 });
+

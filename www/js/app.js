@@ -7,7 +7,7 @@ var APP_KEY = "09a764c6158bb633c508748e5ae636a45bc04b0d";
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers','ngStorage'])
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.factory'])
 .constant('appName', 'News Reader App')
 .constant('APP_KEY', '8445b85126f7794b9d532fb8d317138bf4866ebf')
 .run(function($ionicPlatform) {
@@ -55,7 +55,7 @@ angular.module('starter', ['ionic', 'starter.controllers','ngStorage'])
       }
     })
     .state('app.playlists', {
-      url: '/playlists',
+      url: '/playlists/:category',
       views: {
         'menuContent': {
           templateUrl: 'templates/playlists.html',
@@ -65,11 +65,30 @@ angular.module('starter', ['ionic', 'starter.controllers','ngStorage'])
     })
 
   .state('app.single', {
-    url: '/playlists/:playlistId',
+    url: '/news/:category/:playlistId',
     views: {
       'menuContent': {
         templateUrl: 'templates/playlist.html',
         controller: 'PlaylistCtrl'
+      }
+    }
+  })
+  .state('app.searchlist', {
+      url: '/search?searchKeyword',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/search.html',
+          controller: 'SearchListCtrl'
+        }
+      }
+    })
+
+  .state('app.searchitem', {
+    url: '/search/news/:searchlistId',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/searchitem.html',
+        controller: 'SearchItemCtrl'
       }
     }
   })
@@ -84,26 +103,6 @@ angular.module('starter', ['ionic', 'starter.controllers','ngStorage'])
   });
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app/playlists');
-})
-// create a new factory
-.factory ('StorageService', function ($localStorage) {
-	$localStorage = $localStorage.$default({
-					  settings: []
-					});
-	var _getAll = function () {
-	  return $localStorage.settings;
-	};
-	var _add = function (thing) {
-	  $localStorage.settings= thing;
-	}
-	var _remove = function (thing) {
-	  $localStorage.settings.splice($localStorage.settings.indexOf(thing), 1);
-	}
-	return {
-		getAll: _getAll,
-		add: _add,
-		remove: _remove
-	  };
 })
 
 .filter('getById', function() {

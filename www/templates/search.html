@@ -1,5 +1,43 @@
 <ion-view view-title="Search">
+  
   <ion-content>
-    <h1>Search</h1>
+
+	<ion-refresher on-refresh="doRefresh()">
+                     
+    </ion-refresher>
+    <ion-list >
+	  <ion-item ng-repeat="searchlist in searchlists"
+            class="item-thumbnail-left" href="#/app/search/news/{{searchlist.id}}">
+
+		<img ng-src="{{searchlist.thumbimage}}">
+		<h2>{{searchlist.headline.main + " " +searchlist.headline.name}}</h2>
+		<p ng-show="searchlist.byline.original">{{searchlist.byline.original}}</p>
+		<p>{{searchlist.snippet}}</p>
+		<p> <span ng-show="searchlist.document_type" class ="button button-outline button-small button-{{settings.defaultTheme}}">{{searchlist.document_type}}</span>
+			<span ng-show="searchlist.section_name" class ="button button-outline button-small button-{{settings.defaultTheme}}">{{searchlist.section_name}}</span>
+			<span ng-show="searchlist.subsection_name" class ="button button-outline button-small button-{{settings.defaultTheme}}">{{searchlist.subsection_name}}</span>		
+			<span ng-show="searchlist.source" class ="button button-outline button-small button-{{settings.defaultTheme}}">{{searchlist.source}}</span>		
+		</p>
+		<ion-option-button class="button-positive"
+						   ng-click="share(playlist)">
+		  <i class="ion-android-share-alt"></i> Share
+		</ion-option-button>
+		<ion-option-button class="button-assertive"
+						   ng-click="edit(playlist)">
+		  <i class="ion-android-mail"></i> Read later
+		</ion-option-button>
+		<ion-delete-button class="ion-minus-circled"
+						   ng-click="playlist.splice($index, 1)">
+		</ion-delete-button>
+		<ion-reorder-button class="ion-navicon"
+							on-reorder="reorderItem(item, $fromIndex, $toIndex)">
+		</ion-reorder-button>
+
+	  </ion-item>
+    </ion-list>
+	<ion-infinite-scroll
+		on-infinite="loadMoreNewsItems()"
+		distance="1%">
+	  </ion-infinite-scroll>
   </ion-content>
 </ion-view>
