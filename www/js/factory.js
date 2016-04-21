@@ -37,7 +37,7 @@ angular.module('starter.factory', ['ngStorage'])
 		
 	};
 	
-	var _searchNews = function ($keyword="", page, callback) {
+	var _searchNews = function ($keyword, page, callback) {
 	  
 	  var url = "http://api.nytimes.com/svc/search/v2/articlesearch.json?q="+$keyword+"&sort=newest&page="+page+"&h1=true&api-key="+ARTICLESEARCHAPIKEY;
 	  console.log(url);

@@ -9,6 +9,9 @@ angular.module('starter.controllers', [])
   //$scope.$on('$ionicView.enter', function(e) {
   //});
   $scope.settings = StorageService.getAll();
+  if(typeof $scope.settings === "undefined"){
+	$scope.settings.defaultTheme = "stable";
+  }
   $scope.search = {text: $scope.settings.defaultSearchText};
   // Form data for the login modal
   $scope.loginData = {};

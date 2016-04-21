@@ -45,7 +45,14 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.factory'])
       }
     }
   })
-
+  .state('app.getstarted', {
+      url: '/getstarted',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/getstarted.html'
+        }
+      }
+    })
   .state('app.browse', {
       url: '/browse',
       views: {
@@ -102,7 +109,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.factory'])
     }
   });
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/playlists');
+  $urlRouterProvider.otherwise('/app/playlists/home');
 })
 
 .filter('getById', function() {

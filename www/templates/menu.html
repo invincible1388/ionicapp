@@ -29,11 +29,11 @@
     <ion-header-bar class="bar-{{settings.defaultTheme}} bar ">
       <h1 class="title"></h1>
     </ion-header-bar>
-    <ion-content class="{{settings.defaultTheme}}-bg scroll-content ionic-scroll  has-header">
+    <ion-content class="{{settings.defaultTheme}}-bg scroll-content ionic-scroll has-header">
       <ion-list>
-		<div class="item item-divider">
+		<ion-item menu-close class="item item-divider">
 			Categories
-		</div>
+		</ion-item>
    	    <ion-item menu-close href="#/app/playlists/home">
           <i class="ion-ios-home-outline"></i>&nbsp;Home
         </ion-item>
@@ -53,7 +53,7 @@
 		<ion-item menu-close href="#/app/playlists/science">
           <i class="ion-ios-flask-outline"></i>&nbsp;Science
         </ion-item>
-		<ion-item menu-close href="#/app/playlists/health">
+		<!--ion-item menu-close href="#/app/playlists/health">
           <i class="ion-ios-heart-outline"></i>&nbsp;Health
         </ion-item>
 		<ion-item menu-close href="#/app/playlists/sports">
@@ -70,11 +70,11 @@
         </ion-item>
 		<ion-item menu-close href="#/app/playlists/magazine">
           <i class="ion-ios-book-outline"></i>&nbsp;Magazine
-        </ion-item>
+        </ion-item-->
 		
-		<div class="item item-divider">
+		<ion-item menu-close class="item item-divider">
 			Other
-		</div>
+		</ion-item>
         <ion-item menu-close ng-click="login()">
           <i class="ion-ios-person-outline"></i>&nbsp;Login
         </ion-item>
