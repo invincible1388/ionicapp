@@ -10,7 +10,7 @@
             class="item-thumbnail-left" href="#/app/news/{{category}}/{{playlist.id}}">
 
 		<img image-lazy-src="{{playlist.multimedia[0].url}}" image-lazy-loader="lines" image-lazy-distance-from-bottom-to-load="500">
-		<h2>{{playlist.title}}</h2>
+		<h2 class="title-no-wrap">{{playlist.title}}</h2>
 		<p>{{playlist.byline}}</p>
 		<p>{{playlist.abstract}}</p>
 		<p> <span ng-show="playlist.item_type" class ="button button-outline button-small button-{{settings.defaultTheme}}">{{playlist.item_type}}</span>

@@ -10,7 +10,7 @@
             class="item-thumbnail-left" href="#/app/search/news/{{searchlist.id}}">
 
 		<img image-lazy-src="{{searchlist.thumbimage}}" image-lazy-loader="lines" image-lazy-distance-from-bottom-to-load="100">
-		<h2>{{searchlist.headline.main + " " +searchlist.headline.name}}</h2>
+		<h2 class="title-no-wrap">{{searchlist.headline.main + " " +searchlist.headline.name}}</h2>
 		<p ng-show="searchlist.byline.original">{{searchlist.byline.original}}</p>
 		<p>{{searchlist.snippet}}</p>
 		<p> <span ng-show="searchlist.document_type" class ="button button-outline button-small button-{{settings.defaultTheme}}">{{searchlist.document_type}}</span>

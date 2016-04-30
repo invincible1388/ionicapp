@@ -71,3 +71,7 @@ ion-side-menu  ion-content.light-bg div.list ion-item a.item-content{
 	top: 44px;
 	height: 90%;
 }
+.title-no-wrap{
+	text-overflow: initial;
+    white-space: normal;
+}
