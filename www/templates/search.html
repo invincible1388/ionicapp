@@ -1,15 +1,15 @@
 <ion-view view-title="Search">
   
-  <ion-content>
+  <ion-content lazy-scroll>
 
 	<ion-refresher on-refresh="doRefresh()">
                      
     </ion-refresher>
     <ion-list >
-	  <ion-item ng-repeat="searchlist in searchlists"
+	  <ion-item collection-repeat="searchlist in searchlists"
             class="item-thumbnail-left" href="#/app/search/news/{{searchlist.id}}">
 
-		<img ng-src="{{searchlist.thumbimage}}">
+		<img image-lazy-src="{{searchlist.thumbimage}}" image-lazy-loader="lines" image-lazy-distance-from-bottom-to-load="100">
 		<h2>{{searchlist.headline.main + " " +searchlist.headline.name}}</h2>
 		<p ng-show="searchlist.byline.original">{{searchlist.byline.original}}</p>
 		<p>{{searchlist.snippet}}</p>
@@ -37,7 +37,7 @@
     </ion-list>
 	<ion-infinite-scroll
 		on-infinite="loadMoreNewsItems()"
-		distance="1%">
+		distance="2">
 	  </ion-infinite-scroll>
   </ion-content>
 </ion-view>

@@ -65,3 +65,9 @@ ion-side-menu  ion-content.light-bg div.list ion-item a.item-content{
     background-color: #444; }
   .ionic .dark-border {
     border-color: #111; }
+	
+/* ionic layout issue fix */
+.has-subheader{
+	top: 44px;
+	height: 90%;
+}

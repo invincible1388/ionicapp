@@ -7,7 +7,7 @@ var APP_KEY = "09a764c6158bb633c508748e5ae636a45bc04b0d";
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.factory'])
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.factory', 'ionicLazyLoad'])
 .constant('appName', 'News Reader App')
 .constant('APP_KEY', '8445b85126f7794b9d532fb8d317138bf4866ebf')
 .run(function($ionicPlatform) {

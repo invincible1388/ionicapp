@@ -1,15 +1,15 @@
 <ion-view view-title="{{screenTitle}}">
   
-  <ion-content>
+  <ion-content lazy-scroll>
 
 	<ion-refresher on-refresh="doRefresh()">
                      
     </ion-refresher>
     <ion-list >
-	  <ion-item ng-repeat="playlist in playlists[category]"
+	  <ion-item collection-repeat="playlist in playlists[category]"
             class="item-thumbnail-left" href="#/app/news/{{category}}/{{playlist.id}}">
 
-		<img ng-src="{{playlist.multimedia[0].url}}">
+		<img image-lazy-src="{{playlist.multimedia[0].url}}" image-lazy-loader="lines" image-lazy-distance-from-bottom-to-load="500">
 		<h2>{{playlist.title}}</h2>
 		<p>{{playlist.byline}}</p>
 		<p>{{playlist.abstract}}</p>

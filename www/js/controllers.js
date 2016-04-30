@@ -297,8 +297,9 @@ angular.module('starter.controllers', [])
 			$scope.loadMoreNewsItems();
 		  });
 		$scope.loadMoreNewsItems = function(){
-			
-			$scope.doSearchNews($scope.page++);
+			console.log("refresh"+$scope.page);
+			$scope.doSearchNews(++$scope.page);
+			$scope.$broadcast('scroll.infiniteScrollComplete');
 		}		
 		
 		$scope.doSearchNews($scope.page);

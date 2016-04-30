@@ -1,19 +1,18 @@
 <ion-view view-title="Read News">
-  <ion-content>
+  <ion-content lazy-scroll>
     
-	
+	<div class="padding"><h3>{{newsItem.headline.main + " " +newsItem.headline.name}}</h3></div>
 	
 	<div class="list card">
 
 	  <div class="item">
-		<h2>{{newsItem.headline.main + " " +newsItem.headline.name}}</h2>
 		<h2>{{newsItem.byline.original}}</h2>
 		<p ng-show="newsItem.geo_facet[0]">{{ newsItem.geo_facet[0] }}  </p>
 		<p>{{ newsItem.pub_date |  date:'yyyy-MM-dd' }}  </p>
 	  </div>
 
 	  <div class="item item-body">
-		<img ng-show="newsItem.xlargeimage" class="full-image" ng-src="{{newsItem.xlargeimage}}">
+		<img ng-show="newsItem.xlargeimage" class="full-image" image-lazy-src="{{newsItem.xlargeimage}}" image-lazy-loader="lines" image-lazy-distance-from-bottom-to-load="100">
 		<p> {{newsItem.lead_paragraph}}</p>
 		<p>
 		  <a href="#" class="subdued">1 Like</a>
